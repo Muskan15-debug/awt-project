@@ -27,28 +27,28 @@ const MessageThread = ({ inviteId, currentUserId }) => {
     e.preventDefault();
     if (!text.trim()) return;
     setSending(true);
-    try { await invitesAPI.sendMessage(inviteId, text.trim()); setText(''); await load(); }
+    try { const { data } = await invitesAPI.sendMessage(inviteId, text.trim()); setMessages(prev => [...prev, data.message]); setText(''); }
     catch { toast.error('Failed to send'); }
     finally { setSending(false); }
   };
 
   return (
-    <div style={{ marginTop: '1rem', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-      <div style={{ padding: '0.4rem 1rem', background: 'var(--surface)', borderBottom: '1px solid var(--border)', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.05em' }}>THREAD</div>
-      <div style={{ maxHeight: 200, overflowY: 'auto', padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'var(--surface-minus-1)' }}>
-        {messages.length === 0 && <p style={{ color: 'var(--text-muted)', fontSize: '0.82rem', textAlign: 'center', margin: 'auto' }}>No messages yet.</p>}
+    <div style={{ marginTop: '1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+      <div style={{ padding: '0.4rem 1rem', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>THREAD</div>
+      <div style={{ maxHeight: 200, overflowY: 'auto', padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'var(--bg-tertiary)' }}>
+        {messages.length === 0 && <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', textAlign: 'center', margin: 'auto' }}>No messages yet.</p>}
         {messages.map(m => {
           const isMe = String(m.senderId?._id) === String(currentUserId);
           return (
             <div key={m._id} style={{ display: 'flex', flexDirection: isMe ? 'row-reverse' : 'row', gap: '0.5rem', alignItems: 'flex-end' }}>
-              <div style={{ width: 26, height: 26, borderRadius: '50%', background: 'var(--primary)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.72rem', flexShrink: 0 }}>{m.senderId?.name?.[0]?.toUpperCase()}</div>
-              <div style={{ maxWidth: '72%', padding: '0.45rem 0.75rem', borderRadius: isMe ? '12px 12px 2px 12px' : '12px 12px 12px 2px', background: isMe ? 'var(--primary)' : 'var(--surface)', color: isMe ? '#fff' : 'var(--text)', fontSize: '0.875rem' }}>{m.content}</div>
+              <div style={{ width: 26, height: 26, borderRadius: '50%', background: 'var(--primary-600)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.72rem', flexShrink: 0 }}>{m.senderId?.name?.[0]?.toUpperCase()}</div>
+              <div style={{ maxWidth: '72%', padding: '0.45rem 0.75rem', borderRadius: isMe ? '12px 12px 2px 12px' : '12px 12px 12px 2px', background: isMe ? 'var(--primary-600)' : 'var(--primary-100)', color: isMe ? '#fff' : 'var(--primary-800)', fontSize: '0.875rem' }}>{m.content}</div>
             </div>
           );
         })}
         <div ref={bottomRef} />
       </div>
-      <form onSubmit={send} style={{ display: 'flex', gap: '0.5rem', padding: '0.5rem', borderTop: '1px solid var(--border)', background: 'var(--surface)' }}>
+      <form onSubmit={send} style={{ display: 'flex', gap: '0.5rem', padding: '0.5rem', borderTop: '1px solid var(--border-color)', background: 'var(--bg-primary)' }}>
         <input className="form-input" style={{ flex: 1, marginBottom: 0 }} placeholder="Message..." value={text} onChange={e => setText(e.target.value)} disabled={sending} />
         <button className="btn btn-primary btn-sm" type="submit" disabled={sending || !text.trim()}><HiOutlinePaperAirplane size={15} /></button>
       </form>

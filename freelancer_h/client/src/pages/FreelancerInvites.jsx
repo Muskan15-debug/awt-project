@@ -38,9 +38,9 @@ const MessageThread = ({ inviteId, currentUserId }) => {
     if (!text.trim()) return;
     setSending(true);
     try {
-      await invitesAPI.sendMessage(inviteId, text.trim());
+      const { data } = await invitesAPI.sendMessage(inviteId, text.trim());
+      setMessages(prev => [...prev, data.message]);
       setText('');
-      await load();
     } catch {
       showToast('Failed to send message', 'error');
     } finally {
@@ -50,10 +50,10 @@ const MessageThread = ({ inviteId, currentUserId }) => {
 
   return (
     <div style={{ marginTop: 'var(--space-md)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-      <div style={{ background: 'var(--surface)', padding: 'var(--space-xs) var(--space-md)', borderBottom: '1px solid var(--border)', fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+      <div style={{ background: 'var(--bg-secondary)', padding: 'var(--space-xs) var(--space-md)', borderBottom: '1px solid var(--border-color)', fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
         MESSAGE THREAD
       </div>
-      <div style={{ maxHeight: 220, overflowY: 'auto', padding: 'var(--space-md)', display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)', background: 'var(--surface-minus-1)' }}>
+      <div style={{ maxHeight: 220, overflowY: 'auto', padding: 'var(--space-md)', display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)', background: 'var(--bg-tertiary)' }}>
         {messages.length === 0 && (
           <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', textAlign: 'center', margin: 'auto' }}>No messages yet.</p>
         )}
@@ -61,10 +61,10 @@ const MessageThread = ({ inviteId, currentUserId }) => {
           const isMe = String(m.senderId?._id) === String(currentUserId);
           return (
             <div key={m._id} style={{ display: 'flex', flexDirection: isMe ? 'row-reverse' : 'row', gap: 'var(--space-xs)', alignItems: 'flex-end' }}>
-              <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', color: '#fff', flexShrink: 0 }}>
+              <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--primary-600)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', color: '#fff', flexShrink: 0 }}>
                 {m.senderId?.name?.[0]?.toUpperCase()}
               </div>
-              <div style={{ maxWidth: '70%', padding: '0.5rem 0.75rem', borderRadius: isMe ? '12px 12px 2px 12px' : '12px 12px 12px 2px', background: isMe ? 'var(--primary)' : 'var(--surface)', color: isMe ? '#fff' : 'var(--text)', fontSize: '0.875rem', boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ maxWidth: '70%', padding: '0.5rem 0.75rem', borderRadius: isMe ? '12px 12px 2px 12px' : '12px 12px 12px 2px', background: isMe ? 'var(--primary-600)' : 'var(--primary-100)', color: isMe ? '#fff' : 'var(--primary-800)', fontSize: '0.875rem', boxShadow: 'var(--shadow-sm)' }}>
                 {m.content}
               </div>
             </div>
@@ -72,7 +72,7 @@ const MessageThread = ({ inviteId, currentUserId }) => {
         })}
         <div ref={bottomRef} />
       </div>
-      <form onSubmit={send} style={{ display: 'flex', gap: 'var(--space-xs)', padding: 'var(--space-sm)', borderTop: '1px solid var(--border)', background: 'var(--surface)' }}>
+      <form onSubmit={send} style={{ display: 'flex', gap: 'var(--space-xs)', padding: 'var(--space-sm)', borderTop: '1px solid var(--border-color)', background: 'var(--bg-primary)' }}>
         <input
           className="form-input"
           style={{ flex: 1, marginBottom: 0 }}
