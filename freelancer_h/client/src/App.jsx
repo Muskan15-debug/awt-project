@@ -56,8 +56,6 @@ function App() {
             <Route element={<ProtectedRoute allowedRoles={['recruiter']} />}>
               <Route element={<DashboardLayout />}>
                 <Route path="/recruiter" element={<TalentSearch />} />
-                <Route path="/recruiter/shortlist" element={<RecruiterDashboard initialTab={0} />} />
-                <Route path="/recruiter/invites" element={<RecruiterDashboard initialTab={1} />} />
                 <Route path="/recruiter/pipeline" element={<RecruiterDashboard />} />
               </Route>
             </Route>

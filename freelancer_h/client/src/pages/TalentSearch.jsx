@@ -82,6 +82,7 @@ const TalentSearch = () => {
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
   const [inviteTarget, setInviteTarget] = useState(null);
+  const [showMoreFilters, setShowMoreFilters] = useState(false);
   const [filters, setFilters] = useState({
     role: 'freelancer',
     skills: '',
@@ -94,6 +95,12 @@ const TalentSearch = () => {
   });
 
   const isRecruiter = currentUser?.role === 'recruiter' || currentUser?.role === 'admin';
+
+  const activeFilterCount = [filters.availability, filters.experienceLevel, filters.minRate, filters.maxRate].filter(Boolean).length;
+
+  const clearFilters = () => setFilters(f => ({ ...f, availability: '', experienceLevel: '', minRate: '', maxRate: '', page: 1 }));
+
+  const setFilter = (key, value) => setFilters(f => ({ ...f, [key]: value, page: 1 }));
 
   const loadShortlists = useCallback(async () => {
     if (!isRecruiter) return;
@@ -147,40 +154,66 @@ const TalentSearch = () => {
       </div>
 
       {/* Filters */}
-      <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
-        <input className="form-input" placeholder="Search by name, title, or skills..."
-          value={filters.search} onChange={e => setFilters({ ...filters, search: e.target.value, page: 1 })}
-          style={{ flex: '1 1 260px', marginBottom: 0 }} />
-        <select className="form-select" value={filters.role}
-          onChange={e => setFilters({ ...filters, role: e.target.value, page: 1 })}
-          style={{ marginBottom: 0 }}>
-          <option value="freelancer">Freelancers</option>
-          <option value="agency">Agencies</option>
-          <option value="">All</option>
-        </select>
-        <select className="form-select" value={filters.availability}
-          onChange={e => setFilters({ ...filters, availability: e.target.value, page: 1 })}
-          style={{ marginBottom: 0 }}>
-          <option value="">Any Availability</option>
-          <option value="available">Available</option>
-          <option value="busy">Busy</option>
-          <option value="unavailable">Unavailable</option>
-        </select>
-        <select className="form-select" value={filters.experienceLevel}
-          onChange={e => setFilters({ ...filters, experienceLevel: e.target.value, page: 1 })}
-          style={{ marginBottom: 0 }}>
-          <option value="">Any Experience</option>
-          <option value="junior">Junior</option>
-          <option value="mid">Mid</option>
-          <option value="senior">Senior</option>
-          <option value="expert">Expert</option>
-        </select>
-        <input className="form-input" type="number" placeholder="Min $/hr"
-          value={filters.minRate} onChange={e => setFilters({ ...filters, minRate: e.target.value, page: 1 })}
-          style={{ width: 90, marginBottom: 0 }} />
-        <input className="form-input" type="number" placeholder="Max $/hr"
-          value={filters.maxRate} onChange={e => setFilters({ ...filters, maxRate: e.target.value, page: 1 })}
-          style={{ width: 90, marginBottom: 0 }} />
+      <div style={{ marginBottom: '2rem' }}>
+        {/* Primary filters — always visible */}
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
+          <input className="form-input" placeholder="Search by name, title, or skills..."
+            value={filters.search} onChange={e => setFilter('search', e.target.value)}
+            style={{ flex: '1 1 260px', marginBottom: 0 }} />
+          <select className="form-select" value={filters.role} onChange={e => setFilter('role', e.target.value)} style={{ marginBottom: 0 }}>
+            <option value="freelancer">Freelancers</option>
+            <option value="agency">Agencies</option>
+            <option value="">All</option>
+          </select>
+          <button
+            className="btn btn-secondary btn-sm"
+            onClick={() => setShowMoreFilters(v => !v)}
+            style={{ position: 'relative', fontWeight: 600 }}
+          >
+            {showMoreFilters ? 'Hide Filters' : 'More Filters'}
+            {activeFilterCount > 0 && (
+              <span style={{ position: 'absolute', top: -6, right: -6, background: 'var(--primary-600)', color: '#fff', borderRadius: 99, width: 18, height: 18, fontSize: '0.7rem', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
+          {activeFilterCount > 0 && (
+            <button className="btn btn-ghost btn-sm" onClick={clearFilters} style={{ color: 'var(--error)' }}>Clear filters</button>
+          )}
+        </div>
+
+        {/* Secondary filters — collapsible */}
+        {showMoreFilters && (
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', padding: '1rem', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: '1 1 160px' }}>
+              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Availability</label>
+              <select className="form-select" value={filters.availability} onChange={e => setFilter('availability', e.target.value)} style={{ marginBottom: 0 }}>
+                <option value="">Any</option>
+                <option value="available">🟢 Available</option>
+                <option value="busy">🟡 Busy</option>
+                <option value="unavailable">🔴 Unavailable</option>
+              </select>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: '1 1 160px' }}>
+              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Experience Level</label>
+              <select className="form-select" value={filters.experienceLevel} onChange={e => setFilter('experienceLevel', e.target.value)} style={{ marginBottom: 0 }}>
+                <option value="">Any</option>
+                <option value="junior">Junior</option>
+                <option value="mid">Mid</option>
+                <option value="senior">Senior</option>
+                <option value="expert">Expert</option>
+              </select>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: '1 1 100px' }}>
+              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Min Rate ($/hr)</label>
+              <input className="form-input" type="number" placeholder="0" value={filters.minRate} onChange={e => setFilter('minRate', e.target.value)} style={{ marginBottom: 0 }} />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: '1 1 100px' }}>
+              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Max Rate ($/hr)</label>
+              <input className="form-input" type="number" placeholder="∞" value={filters.maxRate} onChange={e => setFilter('maxRate', e.target.value)} style={{ marginBottom: 0 }} />
+            </div>
+          </div>
+        )}
       </div>
 
       {loading ? (
@@ -277,7 +310,7 @@ const TalentSearch = () => {
           {Array.from({ length: pagination.pages }, (_, i) => (
             <button key={i}
               className={`pagination-btn ${filters.page === i + 1 ? 'active' : ''}`}
-              onClick={() => setFilters({ ...filters, page: i + 1 })}>
+              onClick={() => setFilters(f => ({ ...f, page: i + 1 }))}>
               {i + 1}
             </button>
           ))}

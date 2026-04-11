@@ -21,8 +21,6 @@ const ROLES_MENU = {
   recruiter: [
     { section: 'Recruitment' },
     { to: '/recruiter', icon: HiOutlineSearch, label: 'Talent Discovery' },
-    { to: '/recruiter/shortlist', icon: HiOutlineClipboardList, label: 'Shortlist' },
-    { to: '/recruiter/invites', icon: HiOutlineChatAlt2, label: 'Invites & Messages' },
     { to: '/recruiter/pipeline', icon: HiOutlineViewBoards, label: 'Hiring Pipeline' },
   ],
   projectManager: [
