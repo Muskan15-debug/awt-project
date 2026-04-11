@@ -8,17 +8,10 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const fetchUser = useCallback(async () => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      setUser(null);
-      setLoading(false);
-      return;
-    }
     try {
       const { data } = await usersAPI.getMe();
       setUser(data.user);
     } catch {
-      localStorage.removeItem('accessToken');
       setUser(null);
     } finally {
       setLoading(false);
@@ -31,14 +24,12 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     const { data } = await authAPI.login(credentials);
-    localStorage.setItem('accessToken', data.accessToken);
     setUser(data.user);
     return data;
   };
 
   const register = async (userData) => {
     const { data } = await authAPI.register(userData);
-    localStorage.setItem('accessToken', data.accessToken);
     setUser(data.user);
     return data;
   };
@@ -49,7 +40,6 @@ export const AuthProvider = ({ children }) => {
     } catch {
       // ignore logout errors
     }
-    localStorage.removeItem('accessToken');
     setUser(null);
   };
 

@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 
 import connectDB from './config/db.js';
 
@@ -33,6 +34,7 @@ app.use(cors({
   credentials: true,
 }));
 app.use(morgan('dev'));
+app.use(cookieParser());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
