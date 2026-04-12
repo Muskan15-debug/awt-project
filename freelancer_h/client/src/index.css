@@ -461,6 +461,156 @@ input, textarea, select, button {
   margin-bottom: var(--space-xs);
 }
 
+/* ===== Progress Bar ===== */
+.progress-container {
+  width: 100%;
+  height: 8px;
+  background-color: var(--gray-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-top: var(--space-sm);
+}
+.progress-bar {
+  height: 100%;
+  background-color: var(--primary-600);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-base);
+}
+
+/* ===== Activity Feed ===== */
+.activity-feed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+.activity-item {
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+}
+.activity-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary-50);
+  color: var(--primary-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.activity-content {
+  flex: 1;
+}
+.activity-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-xs);
+}
+.activity-time {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+.activity-text {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+.activity-text strong {
+  color: var(--text-primary);
+}
+
+/* ===== Timeline ===== */
+.timeline {
+  position: relative;
+  padding-left: var(--space-xl);
+  margin: var(--space-lg) 0;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 11px;
+  width: 2px;
+  background: var(--border-color);
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: var(--space-lg);
+}
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+.timeline-dot {
+  position: absolute;
+  left: -24px;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--bg-primary);
+  border: 2px solid var(--primary-500);
+  z-index: 10;
+}
+.timeline-content {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+}
+
+/* ===== Admin Action Dropdown ===== */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 4px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  min-width: 160px;
+  z-index: 50;
+  padding: var(--space-xs) 0;
+}
+.dropdown-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.dropdown-item:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* ===== Action Bar ===== */
+.action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  background: var(--bg-card);
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+
 /* ===== Pagination ===== */
 .pagination {
   display: flex;

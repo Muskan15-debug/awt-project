@@ -21,6 +21,8 @@ export const shortlistAPI = {
 export const projectsAPI = {
   getAll: (params) => api.get('/projects', { params }),
   getOne: (id) => api.get(`/projects/${id}`),
+  assignPM: (id, data) => api.patch(`/projects/${id}/assign-pm`, data),
+  updateStatus: (id, data) => api.patch(`/projects/${id}/status`, data),
 };
 
 export const invitesAPI = {
@@ -74,6 +76,8 @@ export const agenciesAPI = {
 };
 
 export const adminAPI = {
+  getAnalytics: () => api.get('/admin/analytics'),
+  getActivityLog: (params) => api.get('/admin/activity-log', { params }),
   getUsers: (params) => api.get('/admin/users', { params }),
   updateUser: (id, data) => api.patch(`/admin/users/${id}`, data),
   getPendingAgencies: () => api.get('/admin/agencies/pending'),

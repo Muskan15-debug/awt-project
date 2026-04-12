@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import {
+  getAnalytics,
+  getActivityLog,
   getUsers,
   updateUser,
   getPendingAgencies,
@@ -14,6 +16,10 @@ import { requireRole } from '../middleware/roles.js';
 const router = Router();
 
 router.use(authenticate, requireRole('admin'));
+
+// Analytics & Dashboard
+router.get('/analytics', getAnalytics);
+router.get('/activity-log', getActivityLog);
 
 // Users
 router.get('/users', getUsers);

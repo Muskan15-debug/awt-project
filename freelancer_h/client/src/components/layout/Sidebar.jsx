@@ -17,6 +17,7 @@ const ROLES_MENU = {
     { to: '/admin/agencies', icon: HiOutlineOfficeBuilding, label: 'Agency Approvals' },
     { to: '/admin/disputes', icon: HiOutlineExclamationCircle, label: 'Disputes' },
     { to: '/admin/projects', icon: HiOutlineBriefcase, label: 'Projects' },
+    { to: '/admin/activity', icon: HiOutlineDocumentText, label: 'Activity Log' },
   ],
   recruiter: [
     { section: 'Recruitment' },

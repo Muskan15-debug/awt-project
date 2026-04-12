@@ -2,6 +2,7 @@ import Milestone from '../models/Milestone.js';
 import Payment from '../models/Payment.js';
 import Project from '../models/Project.js';
 import Task from '../models/Task.js';
+import ActivityLog from '../models/ActivityLog.js';
 
 // POST /api/milestones/project/:projectId — PM creates milestone
 export const createMilestone = async (req, res, next) => {
@@ -103,6 +104,15 @@ export const updateMilestoneStatus = async (req, res, next) => {
 
     milestone.status = status;
     await milestone.save();
+
+    // Log the status change
+    await ActivityLog.create({
+      action: `milestone.${status}`,
+      performedBy: req.user._id,
+      targetType: 'Milestone',
+      targetId: milestone._id,
+      meta: { milestoneTitle: milestone.title, projectId: project._id, newStatus: status },
+    });
 
     // When milestone is approved, release the held payment
     if (status === 'approved') {

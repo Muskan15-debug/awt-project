@@ -23,7 +23,7 @@ import adminRoutes from './routes/admin.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
-
+console.log("ENV CHECK:", process.env.MONGODB_URI);
 // Connect to MongoDB
 connectDB();
 

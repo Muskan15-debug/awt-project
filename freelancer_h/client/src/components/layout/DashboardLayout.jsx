@@ -9,6 +9,7 @@ const pageTitles = {
   '/admin/agencies': 'Agency Approval Queue',
   '/admin/disputes': 'Dispute Management',
   '/admin/projects': 'All Projects',
+  '/admin/activity': 'Platform Activity Log',
 
   // Recruiter
   '/recruiter': 'Talent Discovery',

@@ -2,6 +2,7 @@ import Task from '../models/Task.js';
 import Milestone from '../models/Milestone.js';
 import Project from '../models/Project.js';
 import Agency from '../models/Agency.js';
+import ActivityLog from '../models/ActivityLog.js';
 
 // POST /api/tasks — PM creates task in a milestone
 export const createTask = async (req, res, next) => {
@@ -145,6 +146,14 @@ export const submitTask = async (req, res, next) => {
     if (submissionFileUrl) task.submissionFileUrl = submissionFileUrl;
     await task.save();
 
+    await ActivityLog.create({
+      action: 'task.submitted',
+      performedBy: req.user._id,
+      targetType: 'Task',
+      targetId: task._id,
+      meta: { taskTitle: task.title, projectId: task.projectId },
+    });
+
     res.json({ message: 'Task submitted', task });
   } catch (error) {
     next(error);
@@ -182,6 +191,14 @@ export const approveTask = async (req, res, next) => {
 
     task.status = status;
     await task.save();
+
+    await ActivityLog.create({
+      action: `task.${status}`,
+      performedBy: req.user._id,
+      targetType: 'Task',
+      targetId: task._id,
+      meta: { taskTitle: task.title, projectId: project._id },
+    });
 
     res.json({ message: `Task ${status}`, task });
   } catch (error) {

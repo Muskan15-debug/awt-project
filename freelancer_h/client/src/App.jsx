@@ -24,6 +24,7 @@ import AdminUsers from './pages/AdminUsers.jsx';
 import AdminAgencies from './pages/AdminAgencies.jsx';
 import AdminDisputes from './pages/AdminDisputes.jsx';
 import AdminProjects from './pages/AdminProjects.jsx';
+import AdminActivity from './pages/AdminActivity.jsx';
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
                 <Route path="/admin/agencies" element={<AdminAgencies />} />
                 <Route path="/admin/disputes" element={<AdminDisputes />} />
                 <Route path="/admin/projects" element={<AdminProjects />} />
+                <Route path="/admin/activity" element={<AdminActivity />} />
               </Route>
             </Route>
 

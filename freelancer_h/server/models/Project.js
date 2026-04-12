@@ -34,7 +34,7 @@ const projectSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['active', 'completed', 'disputed', 'cancelled'],
+    enum: ['active', 'on-hold', 'completed', 'disputed', 'cancelled'],
     default: 'active',
   },
   inviteId: {
