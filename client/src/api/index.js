@@ -90,5 +90,5 @@ export const adminAPI = {
   updateAgency: (id, data) => api.patch(`/admin/agencies/${id}`, data),
   getDisputes: () => api.get('/admin/disputes'),
   resolveDispute: (id, data) => api.patch(`/admin/disputes/${id}/resolve`, data),
-  getProjects: () => api.get('/admin/projects'),
+  getProjects: (params) => api.get('/admin/projects', { params }),
 };

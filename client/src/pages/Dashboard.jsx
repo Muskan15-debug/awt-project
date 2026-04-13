@@ -113,22 +113,41 @@ const Dashboard = () => {
   };
 
   // --- Agency Hub Handlers ---
+  const [searchResults, setSearchResults] = useState([]);
   const handleSearchUser = async (e) => {
     e.preventDefault();
     if (!inviteUserEmail.trim()) return;
     try {
       const { data } = await usersAPI.search({ search: inviteUserEmail, role: 'freelancer' });
-      const found = data.users.find(u => u.email === inviteUserEmail.trim().toLowerCase());
-      if (!found) return toast.error('Freelancer not found');
-      if (found._id === user._id) return toast.error('You cannot invite yourself');
-      if (selectedInvitees.find(i => i._id === found._id)) return toast.error('Already added to invite list');
-
-      setSelectedInvitees([...selectedInvitees, found]);
-      setInviteUserEmail('');
+      const results = (data.users || []).filter(
+        u => u._id !== user._id && !selectedInvitees.find(i => i._id === u._id)
+      );
+      if (results.length === 0) return toast.error('No freelancers found');
+      
+      // If exact email match found, add directly
+      const exactMatch = results.find(u => u.email === inviteUserEmail.trim().toLowerCase());
+      if (exactMatch) {
+        setSelectedInvitees([...selectedInvitees, exactMatch]);
+        setInviteUserEmail('');
+        setSearchResults([]);
+      } else if (results.length === 1) {
+        setSelectedInvitees([...selectedInvitees, results[0]]);
+        setInviteUserEmail('');
+        setSearchResults([]);
+      } else {
+        setSearchResults(results);
+      }
     } catch (err) {
       toast.error('Search failed');
     }
   };
+
+  const handlePickUser = (pickedUser) => {
+    setSelectedInvitees([...selectedInvitees, pickedUser]);
+    setSearchResults(searchResults.filter(u => u._id !== pickedUser._id));
+    setInviteUserEmail('');
+  };
+
 
   const handleProposeAgency = async (e) => {
     e.preventDefault();
@@ -404,10 +423,25 @@ const Dashboard = () => {
                     className="form-input" 
                     value={inviteUserEmail} 
                     onChange={e => setInviteUserEmail(e.target.value)} 
-                    placeholder="Enter freelancer's exact email address"
+                    placeholder="Search by name or email"
+                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleSearchUser(e); } }}
                   />
-                  <button type="button" className="btn btn-secondary" onClick={handleSearchUser}>Add</button>
+                  <button type="button" className="btn btn-secondary" onClick={handleSearchUser}>Search</button>
                 </div>
+                {searchResults.length > 0 && (
+                  <div className="flex flex-col gap-xs" style={{ background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: 'var(--space-sm)', marginBottom: 'var(--space-sm)', maxHeight: 180, overflowY: 'auto' }}>
+                    <div className="text-xs text-muted" style={{ marginBottom: 'var(--space-xs)' }}>Select a freelancer:</div>
+                    {searchResults.map(u => (
+                      <div key={u._id} className="flex justify-between items-center" style={{ padding: 'var(--space-xs) var(--space-sm)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', transition: 'background 0.15s' }} onMouseOver={e => e.currentTarget.style.background = 'var(--bg-tertiary)'} onMouseOut={e => e.currentTarget.style.background = 'transparent'} onClick={() => handlePickUser(u)}>
+                        <div>
+                          <span className="text-sm font-medium">{u.name}</span>
+                          <span className="text-xs text-muted" style={{ marginLeft: 'var(--space-xs)' }}>{u.email}</span>
+                        </div>
+                        <span className="btn btn-sm btn-primary" style={{ padding: '2px 8px', fontSize: '0.7rem' }}>Add</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 {selectedInvitees.length > 0 && (
                   <div className="flex flex-col gap-xs p-md" style={{ background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-md)' }}>
                     {selectedInvitees.map(inv => (

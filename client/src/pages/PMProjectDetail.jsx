@@ -230,7 +230,7 @@ const PMProjectDetail = () => {
             {project.status.toUpperCase()}
           </span>
           {project.status !== 'completed' && project.status !== 'cancelled' && (
-            <button 
+            <button
               className={`btn btn-sm ${project.status === 'active' ? 'btn-secondary' : 'btn-primary'}`}
               onClick={handleProjectStatusToggle}
             >
@@ -399,7 +399,7 @@ const PMProjectDetail = () => {
           {/* Progress Overview Card */}
           <div className="card" style={{ marginBottom: 'var(--space-xl)' }}>
             <h3 style={{ margin: '0 0 var(--space-md) 0' }}>Project Progress</h3>
-            
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 'var(--space-xs)' }}>
               <span style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--primary-600)' }}>{progressPercent}%</span>
               <span className="text-muted text-sm">{approvedTasks} of {totalTasks} tasks approved</span>
@@ -410,8 +410,8 @@ const PMProjectDetail = () => {
 
             <h4 style={{ margin: '0 0 var(--space-sm) 0', fontSize: '0.9375rem' }}>Create Task</h4>
             {!showTaskForm ? (
-              <button 
-                className="btn btn-outline w-full" 
+              <button
+                className="btn btn-outline w-full"
                 style={{ justifyContent: 'center', borderStyle: 'dashed' }}
                 onClick={() => setShowTaskForm(true)}
               >
@@ -486,14 +486,14 @@ const PMProjectDetail = () => {
                   <div className="text-muted text-xs" style={{ marginTop: 2 }}>{new Date(project.createdAt).toLocaleString()}</div>
                 </div>
               </div>
-              
+
               {project.handedOff && (
                 <div className="timeline-item">
                   <div className="timeline-dot" style={{ borderColor: 'var(--info)' }}></div>
                   <div className="timeline-content">
                     <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>Handed off to PM</div>
                     <div className="text-muted text-sm" style={{ marginTop: 2 }}>
-                      {project.recruiterId?.name} assigned {project.pmId?.name} 
+                      {project.recruiterId?.name} assigned {project.pmId?.name}
                     </div>
                   </div>
                 </div>
