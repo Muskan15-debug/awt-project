@@ -94,8 +94,23 @@ export const respondToRequest = async (req, res, next) => {
         return res.status(400).json({ message: 'You are already in an agency and cannot accept.' });
       }
 
+      // If agency doesn't exist yet, we need to verify the initiator isn't already in one
+      if (request.status === 'pending') {
+        const initiator = await User.findById(request.initiatorId);
+        if (initiator.agencyId) {
+          return res.status(400).json({ message: 'The person who sent this invite has already joined another agency.' });
+        }
+      }
+
       invitee.status = 'accepted';
       invitee.responseDate = new Date();
+
+      // Clean up: reject all other pending agency requests for this user
+      await AgencyRequest.updateMany(
+        { 'invitees.user': userId, _id: { $ne: request._id }, status: { $ne: 'cancelled' } },
+        { $set: { 'invitees.$[elem].status': 'rejected' } },
+        { arrayFilters: [{ 'elem.user': userId, 'elem.status': 'pending' }] }
+      );
 
       // If agency doesn't exist yet, this is the first acceptance -> Create Agency
       if (request.status === 'pending') {

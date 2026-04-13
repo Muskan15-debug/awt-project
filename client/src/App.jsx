@@ -51,6 +51,7 @@ function App() {
                 <Route path="/admin/disputes" element={<AdminDisputes />} />
                 <Route path="/admin/projects" element={<AdminProjects />} />
                 <Route path="/admin/activity" element={<AdminActivity />} />
+                <Route path="/admin/profile" element={<Profile />} />
               </Route>
             </Route>
 
@@ -59,6 +60,7 @@ function App() {
               <Route element={<DashboardLayout />}>
                 <Route path="/recruiter" element={<TalentSearch />} />
                 <Route path="/recruiter/pipeline" element={<RecruiterDashboard />} />
+                <Route path="/recruiter/profile" element={<Profile />} />
               </Route>
             </Route>
 
@@ -67,6 +69,7 @@ function App() {
               <Route element={<DashboardLayout />}>
                 <Route path="/pm" element={<PMDashboard />} />
                 <Route path="/pm/projects/:id" element={<PMProjectDetail />} />
+                <Route path="/pm/profile" element={<Profile />} />
               </Route>
             </Route>
 
@@ -87,6 +90,7 @@ function App() {
                 <Route path="/agency/invites" element={<AgencyInvites />} />
                 <Route path="/agency/earnings" element={<Earnings />} />
                 <Route path="/agency/team" element={<AgencyDashboard />} />
+                <Route path="/agency/profile" element={<Profile />} />
               </Route>
             </Route>
 

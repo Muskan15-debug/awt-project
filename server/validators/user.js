@@ -6,7 +6,7 @@ export const updateProfileSchema = z.object({
   bio: z.string().max(2000).trim().optional(),
   skills: z.array(z.string().trim()).optional(),
   hourlyRate: z.number().min(0).optional(),
-  experienceLevel: z.enum(['junior', 'mid', 'senior']).optional(),
+  experienceLevel: z.enum(['junior', 'mid', 'senior', 'expert']).optional(),
   availability: z.enum(['available', 'busy', 'unavailable']).optional(),
   location: z.object({
     city: z.string().trim().optional(),

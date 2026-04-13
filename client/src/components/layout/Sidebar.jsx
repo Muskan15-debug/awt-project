@@ -18,15 +18,21 @@ const ROLES_MENU = {
     { to: '/admin/disputes', icon: HiOutlineExclamationCircle, label: 'Disputes' },
     { to: '/admin/projects', icon: HiOutlineBriefcase, label: 'Projects' },
     { to: '/admin/activity', icon: HiOutlineDocumentText, label: 'Activity Log' },
+    { section: 'Settings' },
+    { to: '/admin/profile', icon: HiOutlineUser, label: 'Profile' },
   ],
   recruiter: [
     { section: 'Recruitment' },
     { to: '/recruiter', icon: HiOutlineSearch, label: 'Talent Discovery' },
     { to: '/recruiter/pipeline', icon: HiOutlineViewBoards, label: 'Hiring Pipeline' },
+    { section: 'Settings' },
+    { to: '/recruiter/profile', icon: HiOutlineUser, label: 'Profile' },
   ],
   projectManager: [
     { section: 'Project Management' },
     { to: '/pm', icon: HiOutlineHome, label: 'Dashboard' },
+    { section: 'Settings' },
+    { to: '/pm/profile', icon: HiOutlineUser, label: 'Profile' },
   ],
   freelancer: [
     { section: 'Freelance Work' },
@@ -42,6 +48,8 @@ const ROLES_MENU = {
     { to: '/agency/invites', icon: HiOutlineChatAlt2, label: 'Invites Inbox' },
     { to: '/agency/earnings', icon: HiOutlineCash, label: 'Earnings' },
     { to: '/agency/team', icon: HiOutlineUserGroup, label: 'Team Management' },
+    { section: 'Settings' },
+    { to: '/agency/profile', icon: HiOutlineUser, label: 'Profile' },
   ],
 };
 

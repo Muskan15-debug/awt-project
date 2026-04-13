@@ -116,6 +116,15 @@ export const updateMilestoneStatus = async (req, res, next) => {
 
     // When milestone is approved, release the held payment
     if (status === 'approved') {
+      // ENFORCEMENT: Ensure all tasks in this milestone are approved first
+      const unfinishedTasks = await Task.countDocuments({ 
+        milestoneId: milestone._id, 
+        status: { $ne: 'approved' } 
+      });
+      if (unfinishedTasks > 0) {
+        return res.status(400).json({ message: 'Cannot approve milestone: all tasks must be approved first' });
+      }
+
       await Payment.findOneAndUpdate(
         { milestoneId: milestone._id, status: 'held' },
         { status: 'released' }
