@@ -17,6 +17,7 @@ import Dashboard from './pages/Dashboard.jsx';
 import PMDashboard from './pages/PMDashboard.jsx';
 import PMProjectDetail from './pages/PMProjectDetail.jsx';
 import AgencyDashboard from './pages/AgencyDashboard.jsx';
+import AgencyTeam from './pages/AgencyTeam.jsx';
 import Earnings from './pages/Earnings.jsx';
 import Profile from './pages/Profile.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
@@ -89,7 +90,7 @@ function App() {
                 <Route path="/agency" element={<AgencyDashboard />} />
                 <Route path="/agency/invites" element={<AgencyInvites />} />
                 <Route path="/agency/earnings" element={<Earnings />} />
-                <Route path="/agency/team" element={<AgencyDashboard />} />
+                <Route path="/agency/team" element={<AgencyTeam />} />
                 <Route path="/agency/profile" element={<Profile />} />
               </Route>
             </Route>

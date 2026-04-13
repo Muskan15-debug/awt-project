@@ -98,7 +98,7 @@ const Profile = () => {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-md)' }}>
           <div className="form-group">
             <label className="form-label">Hourly Rate ($)</label>
-            <input type="number" className="form-input" value={form.hourlyRate} onChange={e => setForm({ ...form, hourlyRate: e.target.value })} />
+            <input type="number" min="0" step="1" className="form-input" value={form.hourlyRate} onChange={e => setForm({ ...form, hourlyRate: e.target.value })} />
           </div>
           <div className="form-group">
             <label className="form-label">Availability</label>
