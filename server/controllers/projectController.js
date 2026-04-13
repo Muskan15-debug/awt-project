@@ -130,8 +130,8 @@ export const updateProjectStatus = async (req, res, next) => {
   try {
     const { status } = req.body;
 
-    if (!['active', 'on-hold'].includes(status)) {
-      return res.status(400).json({ message: 'Status must be active or on-hold' });
+    if (!['active', 'on-hold', 'cancelled'].includes(status)) {
+      return res.status(400).json({ message: 'Status must be active, on-hold, or cancelled' });
     }
 
     const project = await Project.findById(req.params.id);
@@ -139,9 +139,20 @@ export const updateProjectStatus = async (req, res, next) => {
       return res.status(404).json({ message: 'Project not found' });
     }
 
-    // Only the assigned PM can change status
-    if (String(project.pmId) !== String(req.user._id)) {
-      return res.status(403).json({ message: 'Only the assigned PM can update project status' });
+    // Admins can do anything. Otherwise check PM or Recruiter logic.
+    const isAdmin = String(req.user.role) === 'admin';
+    const isPM = String(project.pmId) === String(req.user._id);
+    const isRecruiter = String(project.recruiterId) === String(req.user._id);
+
+    if (status === 'cancelled') {
+        if (!isAdmin && !isRecruiter) {
+            return res.status(403).json({ message: 'Only Recruiters or Admins can cancel a project' });
+        }
+    } else {
+        // active or on-hold
+        if (!isAdmin && !isPM) {
+            return res.status(403).json({ message: 'Only the assigned PM can put a project on hold or active' });
+        }
     }
 
     if (project.status === 'completed' || project.status === 'cancelled') {

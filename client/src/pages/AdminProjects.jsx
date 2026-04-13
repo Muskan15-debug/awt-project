@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { adminAPI } from '../api/index.js';
+import { adminAPI, projectsAPI } from '../api/index.js';
+import { useToast } from '../context/ToastContext.jsx';
 
 const statusBadgeClass = (s) => {
   const map = {
@@ -23,23 +24,36 @@ const STATUS_FILTERS = [
 ];
 
 const AdminProjects = () => {
+  const toast = useToast();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeStatus, setActiveStatus] = useState('all');
 
+  const load = async () => {
+    setLoading(true);
+    try {
+      const params = activeStatus !== 'all' ? { status: activeStatus } : {};
+      const { data } = await adminAPI.getProjects(params);
+      setProjects(data.projects || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancelProject = async (id) => {
+    if (!window.confirm('Are you sure you want to cancel this project?')) return;
+    try {
+      await projectsAPI.updateStatus(id, { status: 'cancelled' });
+      toast.success('Project cancelled successfully');
+      load();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to cancel project');
+    }
+  };
+
   useEffect(() => {
-    const load = async () => {
-      setLoading(true);
-      try {
-        const params = activeStatus !== 'all' ? { status: activeStatus } : {};
-        const { data } = await adminAPI.getProjects(params);
-        setProjects(data.projects || []);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
     load();
   }, [activeStatus]);
 
@@ -77,6 +91,7 @@ const AdminProjects = () => {
                 <th style={{ padding: '1rem' }}>Recruiter</th>
                 <th style={{ padding: '1rem' }}>PM</th>
                 <th style={{ padding: '1rem' }}>Freelancer / Agency</th>
+                <th style={{ padding: '1rem' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -116,6 +131,11 @@ const AdminProjects = () => {
                       </div>
                     ) : (
                       <span className="text-muted">N/A</span>
+                    )}
+                  </td>
+                  <td style={{ padding: '1rem' }}>
+                    {p.status !== 'cancelled' && p.status !== 'completed' && (
+                      <button className="btn btn-sm btn-danger" onClick={() => handleCancelProject(p._id)}>Cancel</button>
                     )}
                   </td>
                 </tr>

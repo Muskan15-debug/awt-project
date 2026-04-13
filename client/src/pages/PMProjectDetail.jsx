@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { projectsAPI, milestonesAPI, tasksAPI, usersAPI } from '../api/index.js';
+import { projectsAPI, milestonesAPI, tasksAPI, usersAPI, disputesAPI } from '../api/index.js';
 import { useToast } from '../context/ToastContext.jsx';
 import { HiOutlineCheckCircle, HiOutlineClock, HiOutlineDocumentText } from 'react-icons/hi';
 
@@ -59,6 +59,9 @@ const PMProjectDetail = () => {
   // Revision form per task
   const [revisionTaskId, setRevisionTaskId] = useState(null);
   const [revisionNote, setRevisionNote] = useState('');
+
+  const [showDisputeForm, setShowDisputeForm] = useState(false);
+  const [disputeReason, setDisputeReason] = useState('');
 
   const loadData = useCallback(async () => {
     try {
@@ -187,6 +190,20 @@ const PMProjectDetail = () => {
     }
   };
 
+  const handleRaiseDispute = async (e) => {
+    e.preventDefault();
+    if (!disputeReason.trim()) return toast.error('Please enter a reason');
+    try {
+      await disputesAPI.create({ projectId: project._id, reason: disputeReason });
+      toast.success('Dispute raised successfully');
+      setShowDisputeForm(false);
+      setDisputeReason('');
+      await loadData();
+    } catch(err) {
+      toast.error(err.response?.data?.message || 'Failed to raise dispute');
+    }
+  };
+
   if (loading) {
     return <div className="loading-screen"><div className="spinner spinner-lg"></div></div>;
   }
@@ -237,8 +254,30 @@ const PMProjectDetail = () => {
               {project.status === 'active' ? 'Put On Hold' : 'Resume Project'}
             </button>
           )}
+          {project.status !== 'completed' && project.status !== 'cancelled' && project.status !== 'disputed' && (
+            <button className="btn btn-sm btn-danger" onClick={() => setShowDisputeForm(v => !v)}>
+              {showDisputeForm ? 'Cancel' : 'Raise Dispute'}
+            </button>
+          )}
         </div>
       </div>
+
+      {showDisputeForm && (
+        <div className="card" style={{ marginBottom: 'var(--space-md)', borderColor: 'var(--error)' }}>
+          <form onSubmit={handleRaiseDispute} className="flex flex-col gap-sm">
+            <label className="form-label text-error" style={{ fontWeight: 600 }}>Describe the issue</label>
+            <textarea 
+               className="form-textarea" 
+               rows="3" 
+               placeholder="Why are you disputing this project?"
+               value={disputeReason}
+               onChange={e => setDisputeReason(e.target.value)}
+               required 
+            />
+            <button type="submit" className="btn btn-sm btn-danger" style={{ alignSelf: 'flex-start' }}>Submit Dispute</button>
+          </form>
+        </div>
+      )}
 
       <div className="grid-2">
         <div>

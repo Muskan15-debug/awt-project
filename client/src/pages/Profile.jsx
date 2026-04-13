@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useToast } from '../context/ToastContext.jsx';
-import { usersAPI } from '../api/index.js';
+import { usersAPI, authAPI } from '../api/index.js';
 
 const Profile = () => {
   const { user, updateUser } = useAuth();
@@ -23,6 +23,8 @@ const Profile = () => {
   const [portfolioLinks, setPortfolioLinks] = useState(user?.portfolioLinks || []);
   const [linkInput, setLinkInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [pwForm, setPwForm] = useState({ currentPassword: '', newPassword: '' });
+  const [pwLoading, setPwLoading] = useState(false);
 
   const addSkill = () => {
     if (skillInput.trim() && !skills.includes(skillInput.trim())) {
@@ -167,6 +169,36 @@ const Profile = () => {
 
         <button type="submit" className="btn btn-primary btn-lg" disabled={loading}>
           {loading ? 'Saving...' : 'Save Changes'}
+        </button>
+      </form>
+
+      <hr style={{ margin: 'var(--space-xl) 0', borderColor: 'var(--border-color)' }} />
+
+      <h3 style={{ marginBottom: 'var(--space-md)' }}>Security</h3>
+      <form className="flex flex-col gap-md" onSubmit={async (e) => {
+        e.preventDefault();
+        if (pwForm.newPassword.length < 6) return toast.error('New password must be at least 6 characters');
+        setPwLoading(true);
+        try {
+          const { data } = await authAPI.changePassword(pwForm);
+          toast.success(data.message || 'Password updated');
+          setPwForm({ currentPassword: '', newPassword: '' });
+        } catch (err) {
+          toast.error(err.response?.data?.message || 'Failed to change password');
+        } finally {
+          setPwLoading(false);
+        }
+      }}>
+        <div className="form-group" style={{ maxWidth: 400 }}>
+          <label className="form-label">Current Password</label>
+          <input type="password" required className="form-input" value={pwForm.currentPassword} onChange={e => setPwForm({ ...pwForm, currentPassword: e.target.value })} />
+        </div>
+        <div className="form-group" style={{ maxWidth: 400 }}>
+          <label className="form-label">New Password</label>
+          <input type="password" required className="form-input" value={pwForm.newPassword} onChange={e => setPwForm({ ...pwForm, newPassword: e.target.value })} />
+        </div>
+        <button type="submit" className="btn btn-secondary" disabled={pwLoading} style={{ alignSelf: 'flex-start' }}>
+          {pwLoading ? 'Updating...' : 'Change Password'}
         </button>
       </form>
     </div>
