@@ -82,3 +82,23 @@ export const logout = async (req, res, next) => {
     next(error);
   }
 };
+
+// PATCH /api/auth/password
+export const changePassword = async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.validatedBody;
+    const user = await User.findById(req.user._id).select('+password');
+    
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) return res.status(401).json({ message: 'Incorrect current password' });
+
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ message: 'Password updated successfully' });
+  } catch (error) {
+    next(error);
+  }
+};

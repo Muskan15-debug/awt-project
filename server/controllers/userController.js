@@ -18,6 +18,7 @@ export const searchUsers = async (req, res, next) => {
     if (search) {
       filter.$or = [
         { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
         { title: { $regex: search, $options: 'i' } },
         { skills: { $in: [new RegExp(search, 'i')] } },
       ];

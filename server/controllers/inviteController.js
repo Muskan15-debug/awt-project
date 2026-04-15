@@ -8,6 +8,11 @@ export const sendInvite = async (req, res, next) => {
   try {
     const { receiverId, receiverType, projectTitle, message } = req.body;
 
+    // Banned users cannot send invites
+    if (req.user.isBanned) {
+      return res.status(403).json({ message: 'Your account has been suspended. You cannot send invites.' });
+    }
+
     if (!receiverId || !receiverType || !projectTitle || !message) {
       return res.status(400).json({ message: 'receiverId, receiverType, projectTitle, and message are required' });
     }

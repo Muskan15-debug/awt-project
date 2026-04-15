@@ -28,6 +28,10 @@ export const createTask = async (req, res, next) => {
       return res.status(404).json({ message: 'Milestone not found in this project' });
     }
 
+    if (milestone.status === 'approved') {
+      return res.status(400).json({ message: 'Cannot add new tasks to an already approved milestone' });
+    }
+
     const task = await Task.create({
       milestoneId,
       projectId,
