@@ -46,7 +46,6 @@ export const getAnalytics = async (req, res, next) => {
         .lean(),
     ]);
 
-    // Convert arrays to objects for easier frontend consumption
     const roleDistribution = {};
     usersByRole.forEach(r => { roleDistribution[r._id] = r.count; });
 
@@ -60,7 +59,6 @@ export const getAnalytics = async (req, res, next) => {
       else if (p._id === 'refunded') { payments.refunded = p.count; payments.refundedAmount = p.total; }
     });
 
-    // Get counts for quick stats
     const activeContracts = await Project.countDocuments({ status: 'active' });
 
     res.json({
@@ -79,7 +77,6 @@ export const getAnalytics = async (req, res, next) => {
   }
 };
 
-// GET /api/admin/activity-log — paginated activity feed
 export const getActivityLog = async (req, res, next) => {
   try {
     const { page = 1, limit = 30, action, targetType } = req.query;

@@ -51,6 +51,7 @@ export const getMyRequests = async (req, res, next) => {
     // Get requests where user is an invitee
     const received = await AgencyRequest.find({ 'invitees.user': userId })
       .populate('initiatorId', 'name email avatar')
+      .populate('invitees.user', 'name email avatar')
       .populate('createdAgencyId', 'name')
       .sort({ createdAt: -1 });
 
@@ -121,7 +122,7 @@ export const respondToRequest = async (req, res, next) => {
           owner: request.initiatorId,
           members: [
             { user: request.initiatorId, role: 'owner', status: 'active' },
-            { user: userId, role: 'admin', status: 'active' } // First acceptor becomes admin
+            { user: userId, role: 'admin', status: 'active' }
           ],
         });
 
@@ -129,14 +130,12 @@ export const respondToRequest = async (req, res, next) => {
         request.createdAgencyId = agency._id;
         await request.save();
 
-        // Update User records for initiator and this acceptor
         await User.findByIdAndUpdate(request.initiatorId, { agencyId: agency._id });
         await User.findByIdAndUpdate(userId, { agencyId: agency._id });
 
-        // Log
         await ActivityLog.create({
           action: 'agency.formed_peer',
-          performedBy: userId, // the accepter triggered creation
+          performedBy: userId, 
           targetType: 'Agency',
           targetId: agency._id,
           meta: { agencyName: agency.name, initiatorId: request.initiatorId }
@@ -144,7 +143,6 @@ export const respondToRequest = async (req, res, next) => {
 
         return res.json({ message: 'Request accepted and Agency formed!', request, agencyId: agency._id });
       } else if (request.status === 'executed' && request.createdAgencyId) {
-        // Agency already exists, just add this user to it
         await Agency.findByIdAndUpdate(request.createdAgencyId, {
           $push: { members: { user: userId, role: 'member', status: 'active' } }
         });

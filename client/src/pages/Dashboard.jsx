@@ -231,16 +231,17 @@ const Dashboard = () => {
             {/* Incoming Requests */}
             <div>
               <h4 className="text-sm" style={{ marginBottom: 'var(--space-sm)' }}>Incoming Proposals</h4>
-              {agencyRequests.received.filter(r => r.status === 'pending').length === 0 ? (
-                <div style={{ padding: 'var(--space-md)', background: 'var(--bg-primary)', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', color: 'var(--text-tertiary)', border: '1px dashed var(--border-color)' }}>
-                  No incoming agency requests.
-                </div>
-              ) : (
-                <div className="flex flex-col gap-sm">
-                  {agencyRequests.received.filter(r => r.status === 'pending').map(req => {
-                    const myInvite = req.invitees.find(i => i.user?._id === user._id);
-                    if (myInvite?.status !== 'pending') return null;
-                    return (
+              {(() => {
+                const actionableRequests = agencyRequests.received.filter(
+                  r => r.status === 'pending' && r.invitees.some(i => (i.user?._id === user._id || i.user === user._id) && i.status === 'pending')
+                );
+                return actionableRequests.length === 0 ? (
+                  <div style={{ padding: 'var(--space-md)', background: 'var(--bg-primary)', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', color: 'var(--text-tertiary)', border: '1px dashed var(--border-color)' }}>
+                    No incoming agency requests.
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-sm">
+                    {actionableRequests.map(req => (
                       <div key={req._id} style={{ padding: 'var(--space-md)', background: 'var(--bg-primary)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
                         <div style={{ fontWeight: 600 }}>{req.proposedName}</div>
                         <div className="text-xs text-muted" style={{ marginBottom: 'var(--space-sm)' }}>Proposed by: {req.initiatorId?.name}</div>
@@ -249,10 +250,10 @@ const Dashboard = () => {
                           <button className="btn btn-sm btn-secondary flex-1" onClick={() => handleRespondToRequest(req._id, 'reject')}>Decline</button>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              )}
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Sent Requests */}
